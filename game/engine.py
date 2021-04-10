@@ -3,14 +3,20 @@ import sys
 import random
 import settings
 
-class Block(pygame.sprite.Sprite): # classe base
+class Block(pygame.sprite.Sprite):
+    def __init__(self, image_path, x_pos, y_pos):
+        super().__init__()
+        self.image = pygame.image.load(image_path).convert_alpha()  # carrega o sprite
+        self.rect = self.image.get_rect(center=(x_pos, y_pos)) # desenha o retangulo em volta da imagem
+
+class AnimatedBlock(pygame.sprite.Sprite): # classe base
     def __init__(self, base_images_path, number_of_images, x_pos, y_pos):
         super().__init__()
         self.sprites = []
 
         for i in range(number_of_images):
             image_path = base_images_path + str(i + 1) + ".png"
-            self.sprites.append(pygame.image.load(image_path))
+            self.sprites.append(pygame.image.load(image_path).convert_alpha())
 
         self.current_sprite = 0
         self.image = self.sprites[self.current_sprite]
@@ -19,7 +25,7 @@ class Block(pygame.sprite.Sprite): # classe base
         self.rect.center = [x_pos, y_pos]
 
 
-class Spaceship(Block):
+class Spaceship(AnimatedBlock):
     def __init__(self, base_images_path, number_of_images, x_pos, y_pos, speed, sprite_speed):
         super().__init__(base_images_path, number_of_images, x_pos, y_pos)
         self.speed = speed  # define a velocidade da espaçonave
@@ -51,14 +57,34 @@ class Spaceship(Block):
         
         self.screen_constrain() 
 
+class Background(Block):
+    def __init__(self, image_path, x_pos, y_pos, moving_speed):
+        super().__init__(image_path, x_pos, y_pos)
+        self.moving_speed = moving_speed
+        self.moving_x = 0
+        self.relative_x = 0
+    
+    def update(self):
+        self.moving_x -= self.moving_speed
+        self.relative_x = self.moving_x % self.rect.width
+        print(self.relative_x)
+        settings.screen.blit(self.image, (self.relative_x - self.rect.width, 0))
+
+        if self.relative_x < settings.screen_width:
+            settings.screen.blit(self.image, (self.relative_x, 0))
+
+
 
 class GameManager():
-    def __init__(self, spaceship_group):
+    def __init__(self, spaceship_group, background_group):
         self.spaceship_group = spaceship_group
+        self.background_group = background_group
     
     def run_game(self):
         # Desenha os objetos do jogo
         self.spaceship_group.draw(settings.screen)
+        self.background_group.draw(settings.screen)
 
         # Atualiza os objetos do jogo
         self.spaceship_group.update()
+        self.background_group.update()

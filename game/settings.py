@@ -8,7 +8,7 @@ pygame.init()
 clock = pygame.time.Clock()
 
 # Janela principal
-screen_width = 1280  # largura
+screen_width = 960  # largura
 screen_height = 720  # altura
 
 # cria a janela do jogo
