@@ -81,10 +81,11 @@ class GameManager():
         self.background_group = background_group
     
     def run_game(self):
-        # Desenha os objetos do jogo
-        self.spaceship_group.draw(settings.screen)
         self.background_group.draw(settings.screen)
-
-        # Atualiza os objetos do jogo
-        self.spaceship_group.update()
         self.background_group.update()
+        
+        self.spaceship_group.draw(settings.screen)
+        self.spaceship_group.update()
+        
+        
+        
