@@ -61,9 +61,9 @@ class Laser(Block):
 class Enemy(AnimatedBlock):
     def __init__(self, base_images_path, number_of_images, x_pos, y_pos, resize):
         super().__init__(base_images_path, number_of_images, x_pos, y_pos, resize)
-        self.speed = 1  # define a velocidade do inimigo
+        self.speed = random.uniform(0.8, 2) if resize <= 1.1  else random.uniform(0.5, 0.8)  # define a velocidade do inimigo
         self.sprite_speed = 0.07 # define a velocidade da troca de sprites
-        self.initial_life = random.randint(1, 6) # vida do inimigo
+        self.initial_life = random.randint(1, 3) if resize <= 1.1  else random.randint(3, 6) # vida do inimigo
         self.life = self.initial_life
 
     def update(self):
@@ -86,7 +86,7 @@ class Enemy(AnimatedBlock):
             self.rect.left = settings.screen_width - 50
 
 
-class Spaceship(AnimatedBlock):
+class Rocket(AnimatedBlock):
     def __init__(self, base_images_path, number_of_images, x_pos, y_pos, resize, speed, sprite_speed):
         super().__init__(base_images_path, number_of_images, x_pos, y_pos, resize)
         self.speed = speed  # define a velocidade da espaçonave
@@ -136,8 +136,8 @@ class Background(Block):
 
 
 class GameManager():
-    def __init__(self, spaceship_group, background_group, laser_group, enemy_group):
-        self.spaceship_group = spaceship_group
+    def __init__(self, rocket_group, background_group, laser_group, enemy_group):
+        self.rocket_group = rocket_group
         self.background_group = background_group
         self.laser_group = laser_group
         self.enemy_group = enemy_group
@@ -146,11 +146,11 @@ class GameManager():
         self.background_group.draw(settings.screen)
         self.background_group.update()
         
-        self.spaceship_group.draw(settings.screen)
+        self.rocket_group.draw(settings.screen)
         self.laser_group.draw(settings.screen)
         self.enemy_group.draw(settings.screen)
 
-        self.spaceship_group.update()
+        self.rocket_group.update()
         self.laser_group.update()
         self.enemy_group.update()
 
