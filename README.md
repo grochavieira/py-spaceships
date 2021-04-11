@@ -123,4 +123,6 @@ As seguintes ferramentas foram usadas na construção do projeto:
 
 Este projeto esta sobe a licença [MIT](./LICENSE).
 
-## Feito com :satisfied: por Guilherme Rocha Vieira [Entre em contato!](https://www.linkedin.com/in/grochavieira/) 👋🏽
+Feito com :satisfied: por Guilherme Rocha Vieira [Entre em contato!](https://www.linkedin.com/in/grochavieira/) 👋🏽
+
+---
