@@ -59,12 +59,13 @@ class Laser(Block):
 
 
 class Enemy(AnimatedBlock):
-    def __init__(self, base_images_path, number_of_images, x_pos, y_pos, resize):
+    def __init__(self, base_images_path, number_of_images, x_pos, y_pos, resize, rocket_group):
         super().__init__(base_images_path, number_of_images, x_pos, y_pos, resize)
         self.speed = random.uniform(0.8, 2) if resize <= 1.1  else random.uniform(0.5, 0.8)  # define a velocidade do inimigo
         self.sprite_speed = 0.07 # define a velocidade da troca de sprites
         self.initial_life = random.randint(1, 3) if resize <= 1.1  else random.randint(3, 6) # vida do inimigo
         self.life = self.initial_life
+        self.rocket_group = rocket_group
 
     def update(self):
         self.rect.x -= self.speed  # movimenta a espaçonave no eixo x
@@ -85,6 +86,16 @@ class Enemy(AnimatedBlock):
         if self.rect.left <= 0:
             self.rect.left = settings.screen_width - 50
 
+        if pygame.sprite.spritecollide(self, self.rocket_group, False):
+            pygame.mixer.Sound.play(settings.hit_sound) # toca o som de hit
+
+            collided_rockets = pygame.sprite.spritecollide(self, self.rocket_group, False)
+
+            for collided_rocket in collided_rockets:
+                collided_rocket.life -= 1
+            
+            self.kill()
+
 
 class Rocket(AnimatedBlock):
     def __init__(self, base_images_path, number_of_images, x_pos, y_pos, resize, speed, sprite_speed):
@@ -93,6 +104,7 @@ class Rocket(AnimatedBlock):
         self.sprite_speed = sprite_speed # define a velocidade da troca de sprites
         self.movement_y = 0  # define a movimentação da espaçonave no eixo y
         self.movement_x = 0  # define a movimentação da espaçonave no eixo x
+        self.life = 3 # Define a quantidade de vidas do rocket
 
     # função para limitar até onde a espaçonave pode ir
     def screen_constrain(self):
@@ -155,6 +167,7 @@ class GameManager():
         self.enemy_group.update()
 
         self.draw_score()
+        self.draw_life()
     
     def draw_score(self):
         player_score = settings.basic_font.render(
@@ -166,4 +179,27 @@ class GameManager():
         settings.screen.blit(player_score, player_score_rect)
         
         
-        
+    def draw_heart(self, life):
+        heart = pygame.image.load('assets/life.png')
+        heartScaled = pygame.transform.scale(heart, (40, 25))
+        if (life >= 5):
+            settings.screen.blit(heartScaled, (310, 50))
+        if (life >= 4):
+            settings.screen.blit(heartScaled, (270, 50))
+        if (life >= 3):
+            settings.screen.blit(heartScaled, (230, 50))
+        if (life >= 2):
+            settings.screen.blit(heartScaled, (190, 50))
+        if (life >= 1):
+            settings.screen.blit(heartScaled, (150, 50))
+
+    def draw_life(self):
+        lifes_text = settings.basic_font.render(
+            "LIFES ", True, settings.font_color)
+
+        self.draw_heart(self.rocket_group.sprite.life)
+
+        lifes_text_rect = lifes_text.get_rect(
+            midleft=(10, 60))
+
+        settings.screen.blit(lifes_text, lifes_text_rect)

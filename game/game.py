@@ -5,7 +5,7 @@ import settings
 import engine
 
 def start():
-    rocket_group = pygame.sprite.Group()
+    rocket_group = pygame.sprite.GroupSingle()
     rocket = engine.Rocket("assets/rocket/ship", 4, settings.screen_width/2, settings.screen_height/2, 1, 4, 0.10)
     rocket_group.add(rocket)
 
@@ -60,7 +60,7 @@ def start():
         current_time = pygame.time.get_ticks()
 
         if(current_time - spawn_enemy_timer >= 1400):
-            enemy = engine.Enemy("assets/enemies/enemy", 6, settings.screen_width, random.randint(50, settings.screen_height - 50), random.uniform(0.8, 1.3))
+            enemy = engine.Enemy("assets/enemies/enemy", 6, settings.screen_width, random.randint(50, settings.screen_height - 50), random.uniform(0.8, 1.3), rocket_group)
             enemy_group.add(enemy)
             spawn_enemy_timer = pygame.time.get_ticks()
 
