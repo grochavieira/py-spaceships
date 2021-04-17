@@ -111,8 +111,8 @@ class Rocket(AnimatedBlock):
 
     # função para limitar até onde a espaçonave pode ir
     def screen_constrain(self):
-        if self.rect.top <= 100:  
-            self.rect.top = 100
+        if self.rect.top <= 120:  
+            self.rect.top = 120
         if self.rect.bottom >= settings.screen_height:
             self.rect.bottom = settings.screen_height 
         if self.rect.left <= 0:
@@ -258,31 +258,37 @@ class GameManager():
         settings.screen.blit(player_score, player_score_rect)
         
         
-    def draw_heart(self, life):
+    def draw_heart(self, life, index):
         heart = pygame.image.load('assets/life.png')
         heartScaled = pygame.transform.scale(heart, (40, 25))
         if (life >= 5):
-            settings.screen.blit(heartScaled, (310, 50))
+            settings.screen.blit(heartScaled, (310, 50 * index))
         if (life >= 4):
-            settings.screen.blit(heartScaled, (270, 50))
+            settings.screen.blit(heartScaled, (270, 50 * index))
         if (life >= 3):
-            settings.screen.blit(heartScaled, (230, 50))
+            settings.screen.blit(heartScaled, (230, 50 * index))
         if (life >= 2):
-            settings.screen.blit(heartScaled, (190, 50))
+            settings.screen.blit(heartScaled, (190, 50 * index))
         if (life >= 1):
-            settings.screen.blit(heartScaled, (150, 50))
+            settings.screen.blit(heartScaled, (150, 50 * index))
 
     def draw_life(self):
         if len(self.rocket_group.sprites()) > 0:
-            lifes_text = settings.basic_font.render(
-                "LIFES ", True, settings.font_color)
+            for index, rocket in enumerate(self.rocket_group.sprites()):
+                index += 1
 
-            self.draw_heart(self.rocket_group.sprite.life)
+                lifes_text = settings.basic_font.render(
+                    "LIFES P" + str(index), True, settings.font_color)
 
-            lifes_text_rect = lifes_text.get_rect(
-                midleft=(10, 60))
+                if(index >= 2):
+                    index = 1.7
 
-            settings.screen.blit(lifes_text, lifes_text_rect)
+                self.draw_heart(rocket.life, index)
+
+                lifes_text_rect = lifes_text.get_rect(
+                    midleft=(10, 60 * index))
+
+                settings.screen.blit(lifes_text, lifes_text_rect)
 
 class Mouse(pygame.sprite.Sprite):
     def __init__(self):
