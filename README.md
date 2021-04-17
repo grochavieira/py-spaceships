@@ -42,6 +42,19 @@ Jogo feito em python para a matéria de Desenvolvimento de Jogos do 7° Semestre
 
 ## ⚙️ Funcionalidades
 
+- [x] Menu para escolher entre modo singleplayer e multiplayer;
+- [x] Tela de fundo com movimentação;
+- [x] Singleplayer:
+  - [x] Você controla um foguete para atirar e movimentar pela tela inteira;
+  - [x] Espaçonaves aparecem do lado direto da tela de forma/vida/tamanho aleatórios;
+  - [x] Sistema de vidas - perde ao tocar em um inimigo ou quando eles chegam no fim da tela;
+  - [x] Capacidade de deixar os elementos do jogo mais devagares por 10 segundos a cada 5000 pontos feitos;
+  - [x] O jogo acaba quando a vida do jogador acabar.
+- [x] Multiplayer:
+  - [x] As mesmas funcionalidades que singleplayer;
+  - [x] Sistema de vidas para ambos os jogadores;
+  - [x] O jogo acaba quando a vida de um dos jogadores acabar;
+
 ---
 
 ## 🎨 Layout
