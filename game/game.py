@@ -130,15 +130,15 @@ class GameState():
     def singleplayer(self):
         self.is_running = True
         settings.score = 0
-        
+
         self.game_manager.reset_game()
         rocket = engine.Rocket("assets/rocket/ship", 4, 100, settings.screen_height/2, 1, 4, 0.10)
         self.rocket_group.add(rocket)
 
         slow_time_text = settings.basic_font.render(
-            "press enter to slow time" + str(settings.score), True, settings.font_color)
+            "press enter to slow time", True, settings.font_color)
         slow_time_text_rect = slow_time_text.get_rect(
-            center=(settings.screen_width/2, 50))
+            center=(settings.screen_width/2 + 100, 10))
 
         spawn_enemy_timer = pygame.time.get_ticks()
 
@@ -217,9 +217,9 @@ class GameState():
         self.rocket_group.add(rocket_player2)
 
         slow_time_text = settings.basic_font.render(
-            "press enter to slow time" + str(settings.score), True, settings.font_color)
+            "press enter to slow time", True, settings.font_color)
         slow_time_text_rect = slow_time_text.get_rect(
-            center=(settings.screen_width/2, 50))
+            center=(settings.screen_width/2 + 200, 50))
 
         spawn_enemy_timer = pygame.time.get_ticks()
 
@@ -301,7 +301,7 @@ class GameState():
                     
             current_time = pygame.time.get_ticks()
 
-            if(current_time - spawn_enemy_timer >= 1400):
+            if(current_time - spawn_enemy_timer >= 950):
                 enemy = engine.Enemy("assets/enemies/enemy", 6, settings.screen_width, random.randint(120, settings.screen_height - 50), random.uniform(0.8, 1.3), self.rocket_group)
                 self.enemy_group.add(enemy)
                 spawn_enemy_timer = pygame.time.get_ticks()
