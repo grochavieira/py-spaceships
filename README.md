@@ -60,6 +60,30 @@ Jogo feito em python para a matéria de Desenvolvimento de Jogos do 7° Semestre
 
 ## 🎨 Layout
 
+### Tela Inicial
+
+<div align="center">
+    <img width="100%" src="./.github/menu_screen.gif" />
+</div>
+
+### Modo Singleplayer
+
+<div align="center">
+    <img width="100%" src="./.github/singleplayer_screen.PNG" />
+</div>
+
+### Modo Multiplayer
+
+<div align="center">
+    <img width="100%" src="./.github/multiplayer_screen.PNG" />
+</div>
+
+### Tela de Resultados
+
+<div align="center">
+    <img width="100%" src="./.github/results_screen.PNG" />
+</div>
+
 ---
 
 ## 🚀 Como executar o projeto
