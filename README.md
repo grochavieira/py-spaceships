@@ -54,6 +54,7 @@ Jogo feito em python para a matéria de Desenvolvimento de Jogos do 7° Semestre
   - [x] As mesmas funcionalidades que singleplayer;
   - [x] Sistema de vidas para ambos os jogadores;
   - [x] O jogo acaba quando a vida de um dos jogadores acabar;
+  - [x] Os inimigos aparecem com mais frequência no multiplayer.
 
 ---
 
