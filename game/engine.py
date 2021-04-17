@@ -168,6 +168,16 @@ class GameManager():
 
         self.draw_score()
         self.draw_life()
+
+    def reset_game(self):
+        for rocket in self.rocket_group.sprites():
+            rocket.kill()
+
+        for laser in self.laser_group.sprites():
+            laser.kill()
+        
+        for enemy in self.enemy_group.sprites():
+            enemy.kill()
     
     def draw_score(self):
         player_score = settings.basic_font.render(
@@ -194,12 +204,49 @@ class GameManager():
             settings.screen.blit(heartScaled, (150, 50))
 
     def draw_life(self):
-        lifes_text = settings.basic_font.render(
-            "LIFES ", True, settings.font_color)
+        if len(self.rocket_group.sprites()) > 0:
+            lifes_text = settings.basic_font.render(
+                "LIFES ", True, settings.font_color)
 
-        self.draw_heart(self.rocket_group.sprite.life)
+            self.draw_heart(self.rocket_group.sprite.life)
 
-        lifes_text_rect = lifes_text.get_rect(
-            midleft=(10, 60))
+            lifes_text_rect = lifes_text.get_rect(
+                midleft=(10, 60))
 
-        settings.screen.blit(lifes_text, lifes_text_rect)
+            settings.screen.blit(lifes_text, lifes_text_rect)
+
+class Mouse(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.Surface([1, 1])
+        self.image.fill((255, 255, 255))
+        self.rect = self.image.get_rect()
+
+    def update(self):
+        self.rect.center = pygame.mouse.get_pos()
+
+class Button(AnimatedBlock):
+    def __init__(self, base_images_path, number_of_images, x_pos, y_pos, resize, sprite_speed):
+        super().__init__(base_images_path, number_of_images, x_pos, y_pos, resize)
+        self.sprite_speed = sprite_speed
+
+    def update(self):
+        self.current_sprite += self.sprite_speed
+
+        if self.current_sprite >= len(self.sprites):
+            self.current_sprite = 0
+
+        self.image = self.sprites[int(self.current_sprite)]
+
+class Text(AnimatedBlock):
+    def __init__(self, base_images_path, number_of_images, x_pos, y_pos, resize, sprite_speed):
+        super().__init__(base_images_path, number_of_images, x_pos, y_pos, resize)
+        self.sprite_speed = sprite_speed
+
+    def update(self):
+        self.current_sprite += self.sprite_speed
+
+        if self.current_sprite >= len(self.sprites):
+            self.current_sprite = 0
+
+        self.image = self.sprites[int(self.current_sprite)]

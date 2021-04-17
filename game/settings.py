@@ -18,12 +18,13 @@ pygame.display.set_caption("Ships")  # titulo
 bg_color = pygame.Color("#333333")  # cor de fundo
 font_color = pygame.Color("#ffffff") # cor da fonte
 basic_font = pygame.font.Font("fonts/8-BIT-WONDER.ttf", 20)  # carrega a fonte
-hit_sound = pygame.mixer.Sound("audio/hit.wav")
 
 # sons de efeito
 laser_sound = pygame.mixer.Sound(
     "audio/laser.wav")
 destroy_sound = pygame.mixer.Sound("audio/destroy.wav")
+hit_sound = pygame.mixer.Sound("audio/hit.wav")
+button_sound = pygame.mixer.Sound("audio/button.wav") 
 
 # score do jogo
 score = 0

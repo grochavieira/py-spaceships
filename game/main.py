@@ -5,4 +5,7 @@ import settings
 import engine
 import game
 
-game.start()
+game_state = game.GameState()
+
+while True:
+    game_state.state_manager()
