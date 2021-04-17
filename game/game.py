@@ -68,7 +68,7 @@ class GameState():
                         collision_button = pygame.sprite.spritecollide(
                             mouse, button_group, False)[0].rect
                         print(collision_button.bottom)
-                        if collision_button.bottom <= 600:
+                        if collision_button.bottom <= 650:
                             settings.button_sound.play()
                             self.state = "singleplayer"
                             self.is_running = False
@@ -91,15 +91,58 @@ class GameState():
 
             pygame.display.update()
             settings.clock.tick(120)
+    
+    def lost_level(self):
+        self.is_running = True
+
+        lost_level_text = settings.basic_font.render(
+            "Your total score is " + str(settings.score), True, settings.font_color)
+        lost_level_text_rect = lost_level_text.get_rect(
+            center=(settings.screen_width/2, settings.screen_height/2 - 50))
+
+        press_space_text = settings.basic_font.render(
+            "Press space to return to the menu", True, settings.font_color)
+        press_space_text_rect = press_space_text.get_rect(
+            center=(settings.screen_width/2, settings.screen_height/2 + 50))
+
+        while self.is_running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        settings.score = 0
+                        self.state = "menu"
+                        self.is_running = False
+
+            self.background_group.draw(settings.screen)
+            self.background_group.update()
+
+            settings.screen.blit(lost_level_text, lost_level_text_rect)
+            settings.screen.blit(press_space_text, press_space_text_rect)
+            pygame.display.update()
+            settings.clock.tick(120)
 
     def singleplayer(self):
         self.is_running = True
-        rocket = engine.Rocket("assets/rocket/ship", 4, settings.screen_width/2, settings.screen_height/2, 1, 4, 0.10)
+        rocket = engine.Rocket("assets/rocket/ship", 4, 100, settings.screen_height/2, 1, 4, 0.10)
         self.rocket_group.add(rocket)
+
+        slow_time_text = settings.basic_font.render(
+            "press enter to slow time" + str(settings.score), True, settings.font_color)
+        slow_time_text_rect = slow_time_text.get_rect(
+            center=(settings.screen_width/2, 50))
 
         spawn_enemy_timer = pygame.time.get_ticks()
 
         while self.is_running:
+            if (rocket.life <= 0):
+                self.state = "lost_level"
+                self.game_manager.reset_game()
+                self.is_running = False
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -111,6 +154,12 @@ class GameState():
                         self.state = "menu"
                         self.game_manager.reset_game()
                         self.is_running = False
+
+                    if event.key == pygame.K_w:
+                        if(not self.game_manager.can_slow_time and settings.score - self.game_manager.score_before_slow_time >= 5000):
+                            self.game_manager.can_slow_time = True
+                            self.game_manager.slowed_time = pygame.time.get_ticks()
+                            self.game_manager.slow_time()
                         
                     if event.key == pygame.K_UP:
                         rocket.movement_y -= rocket.speed
@@ -141,13 +190,14 @@ class GameState():
             current_time = pygame.time.get_ticks()
 
             if(current_time - spawn_enemy_timer >= 1400):
-                enemy = engine.Enemy("assets/enemies/enemy", 6, settings.screen_width, random.randint(50, settings.screen_height - 50), random.uniform(0.8, 1.3), self.rocket_group)
+                enemy = engine.Enemy("assets/enemies/enemy", 6, settings.screen_width, random.randint(120, settings.screen_height - 50), random.uniform(0.8, 1.3), self.rocket_group)
                 self.enemy_group.add(enemy)
                 spawn_enemy_timer = pygame.time.get_ticks()
 
-
-            settings.screen.fill(settings.bg_color)
-
             self.game_manager.run_game()
+
+            if(not self.game_manager.can_slow_time and settings.score - self.game_manager.score_before_slow_time >= 5000):
+                settings.screen.blit(slow_time_text, slow_time_text_rect)
+
             pygame.display.update()
             settings.clock.tick(120)

@@ -61,8 +61,8 @@ class Laser(Block):
 class Enemy(AnimatedBlock):
     def __init__(self, base_images_path, number_of_images, x_pos, y_pos, resize, rocket_group):
         super().__init__(base_images_path, number_of_images, x_pos, y_pos, resize)
-        self.speed = random.uniform(0.8, 2) if resize <= 1.1  else random.uniform(0.5, 0.8)  # define a velocidade do inimigo
-        self.sprite_speed = 0.07 # define a velocidade da troca de sprites
+        self.speed = random.uniform(0.8, 2) * settings.slow_time if resize <= 1.1  else random.uniform(0.5, 0.8) * settings.slow_time  # define a velocidade do inimigo
+        self.sprite_speed = 0.07 * settings.slow_time # define a velocidade da troca de sprites
         self.initial_life = random.randint(1, 3) if resize <= 1.1  else random.randint(3, 6) # vida do inimigo
         self.life = self.initial_life
         self.rocket_group = rocket_group
@@ -84,7 +84,10 @@ class Enemy(AnimatedBlock):
     
     def collisions(self):
         if self.rect.left <= 0:
-            self.rect.left = settings.screen_width - 50
+            pygame.mixer.Sound.play(settings.hit_sound) # toca o som de hit
+            for rocket in self.rocket_group.sprites():
+                rocket.life -= 1
+            self.kill()
 
         if pygame.sprite.spritecollide(self, self.rocket_group, False):
             pygame.mixer.Sound.play(settings.hit_sound) # toca o som de hit
@@ -108,8 +111,8 @@ class Rocket(AnimatedBlock):
 
     # função para limitar até onde a espaçonave pode ir
     def screen_constrain(self):
-        if self.rect.top <= 0:  
-            self.rect.top = 0
+        if self.rect.top <= 100:  
+            self.rect.top = 100
         if self.rect.bottom >= settings.screen_height:
             self.rect.bottom = settings.screen_height 
         if self.rect.left <= 0:
@@ -153,6 +156,9 @@ class GameManager():
         self.background_group = background_group
         self.laser_group = laser_group
         self.enemy_group = enemy_group
+        self.can_slow_time = False
+        self.slowed_time = 0
+        self.score_before_slow_time = 0
     
     def run_game(self):
         self.background_group.draw(settings.screen)
@@ -168,6 +174,69 @@ class GameManager():
 
         self.draw_score()
         self.draw_life()
+
+        if(self.can_slow_time):
+            self.restart_slow_timer()
+        
+    def slow_time(self):
+        pygame.mixer.Sound.play(settings.slow_time_sound)
+
+        for background in self.background_group.sprites():
+            background.moving_speed *= 0.5
+        
+        for enemy in self.enemy_group.sprites():
+            enemy.speed *= 0.5
+            enemy.sprite_speed *= 0.5
+        
+        settings.slow_time = 0.5
+    
+    def reset_time(self):
+        pygame.mixer.Sound.play(settings.time_resume_sound)
+
+        for background in self.background_group.sprites():
+            background.moving_speed *= 2
+        
+        for enemy in self.enemy_group.sprites():
+            enemy.speed *= 2
+            enemy.sprite_speed *= 2
+        
+        settings.slow_time = 1
+        self.score_before_slow_time = settings.score
+    
+    def restart_slow_timer(self):
+        current_time = pygame.time.get_ticks()  
+        countdown_number = 10
+
+        if current_time - self.slowed_time <= 700:
+            countdown_number = 10
+        if 700 < current_time - self.slowed_time <= 1400:
+            countdown_number = 9
+        if 1400 < current_time - self.slowed_time <= 2100:
+            countdown_number = 8
+        if 2100 < current_time - self.slowed_time <= 2800:
+            countdown_number = 7
+        if 2800 < current_time - self.slowed_time <= 3500:
+            countdown_number = 6
+        if 3500 < current_time - self.slowed_time <= 4200:
+            countdown_number = 5
+        if 4200 < current_time - self.slowed_time <= 4900:
+            countdown_number = 4
+        if 4900 < current_time - self.slowed_time <= 5600:
+            countdown_number = 3
+        if 5600 < current_time - self.slowed_time <= 6300:
+            countdown_number = 2
+        if 6300 < current_time - self.slowed_time <= 7000:
+            countdown_number = 1
+        if current_time - self.slowed_time >= 7000:
+            countdown_number = 0
+            self.reset_time()
+            self.can_slow_time = False
+
+        time_counter = settings.basic_font.render(
+            str(countdown_number), True, settings.font_color)
+        time_counter_rect = time_counter.get_rect(
+            center=(settings.screen_width/2, settings.screen_height/2 + 50))
+        settings.screen.blit(time_counter, time_counter_rect)
 
     def reset_game(self):
         for rocket in self.rocket_group.sprites():
