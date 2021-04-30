@@ -8,9 +8,8 @@
   </a>
     
    <img alt="License" src="https://img.shields.io/badge/license-MIT-brightgreen?style=flat">
-  
- 
 </p>
+
 <h1 align="center">
     <img src="./.github/logo.png" />
 </h1>
