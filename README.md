@@ -15,7 +15,7 @@
 </h1>
 
 <h4 align="center"> 
-	🚧  Aplicação finalizada! 🚧
+	:tada:  Aplicação finalizada! :tada:
 </h4>
 
 ## 🏁 Tópicos
